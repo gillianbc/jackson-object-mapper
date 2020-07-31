@@ -7,7 +7,8 @@ Simple Spring Boot app to show how we can use Jackson to convert Java objects to
 - Serializing to a JSON string
 - Deserializing from a JSON file
 - Deserializing from a JSON string
-... but wait, there's more...
+
+... but wait, there's more... 
 - Pretty printing JSON using the JSONObject library
 - 
 -
