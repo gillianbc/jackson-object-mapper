@@ -2,6 +2,9 @@ package com.gillianbc;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,25 +35,10 @@ public class JacksonApplication implements CommandLineRunner{
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-
-	@Bean
-	public Utilities produceUtilitiesBean() {
-		System.out.println("******* Making a Utilities bean");
-		return new Utilities();
-	}
-	
-	@Bean
-	public ObjectMapper produceObjectMapper() {
-		System.out.println("******* Making an Object Mapper bean");
-		return new ObjectMapper();
-	}
-	
-	
 	public static void main(String[] args) throws JsonGenerationException, JsonMappingException, IOException {
 		
 		SpringApplication.run(JacksonApplication.class, args);
 		
-
 	}
 
 	@Override
@@ -62,9 +52,13 @@ public class JacksonApplication implements CommandLineRunner{
 		
 		deserializeCarFromFile();
 		
+		deserializeCarFromJsonUrl();
+		
 		deserializeCarFromString();
 		
 		extractJsonNode();
+		
+		deserializeCarFromFileIntoArray();
 		
 	}
 
@@ -84,7 +78,10 @@ public class JacksonApplication implements CommandLineRunner{
 		utils.printPrettyJSON(json);
 		System.out.println("Rootnode is " + jsonNode);
 		
-		JsonNode locatedNode = jsonNode.path("identification").path("name");
+		JsonNode locatedNode = jsonNode.path("identification");
+		System.out.println("identification node is " + locatedNode);
+		
+		locatedNode = jsonNode.path("identification").path("name");
 		System.out.println("identification/name node is " + locatedNode);
 		
 		locatedNode = jsonNode.path("identification").path("address");
@@ -103,7 +100,20 @@ public class JacksonApplication implements CommandLineRunner{
 		System.out.println("\n=== Deserializing from string ===");
 		String json = "{ \"color\" : \"Black\", \"type\" : \"BMW\" }";
 		Car car = objectMapper.readValue(json, Car.class);
-		System.out.println("Car object deserialized from JSON string of " + json + " is: " + car);
+		System.out.println("Car object deserialized from JSON string of " + json + " is:\n" + car);
+	}
+	
+	private void deserializeCarFromJsonUrl() throws JsonMappingException, JsonProcessingException {
+		System.out.println("\n=== Deserializing from url json ===");
+		Car car;
+		try {
+			car = objectMapper.readValue(new URL("file:src/test/resources/json_car.json"), Car.class);
+			System.out.println("Car object deserialized from url is: " + car);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void serializeCarToFile() throws IOException, JsonGenerationException, JsonMappingException {
@@ -121,6 +131,20 @@ public class JacksonApplication implements CommandLineRunner{
 		System.out.println("\n=== Deserializing from file ===");
 		Car car = objectMapper.readValue(new File("src/test/resources/json_car.json"), Car.class);
 		System.out.println("Car object read back in from JSON file: " + car);
+	}
+	
+	private void deserializeCarFromFileIntoArray() throws IOException, JsonGenerationException, JsonMappingException {
+		System.out.println("\n=== Deserializing from file into Array ===");
+		
+		String json = utils.readFileIntoString("src/test/resources/json_cars.json");
+		
+		JsonNode carsNode = objectMapper.readTree(json).path("cars");
+		
+		System.out.println(" Cars is " + carsNode);
+		
+		List<Car> listCar = 
+				objectMapper.readValue(carsNode.toString(), new TypeReference<List<Car>>(){});
+		System.out.println("Cars list loaded in from JSON file: " + listCar);
 	}
 	
 	

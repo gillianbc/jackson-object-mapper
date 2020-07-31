@@ -2,19 +2,24 @@
 
 Simple Spring Boot app to show how we can use Jackson to convert Java objects to JSON strings and JSON strings to Java objects.
 
+Mainly based on that most excellent resource:  https://www.baeldung.com/jackson-object-mapper-tutorial
+
+
 ## Features Included
 - Serializing to a JSON file
 - Serializing to a JSON string
 - Deserializing from a JSON file
 - Deserializing from a JSON string
-- Using JsonNode to fish out individual nodes from the JSON
+- Reading a json string into a JsonNode structure and then fishing out individual nodes
+- Reading json array data into a List
+
+## ObjectMapper Methods Used
+- readValue()
+- writeValue()
+- readTree()
 
 ... but wait, there's more... 
 - Pretty printing JSON using the JSONObject library
-- 
--
--
--
 
 
 # Running the App

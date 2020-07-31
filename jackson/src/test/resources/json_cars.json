@@ -1,0 +1,6 @@
+{ 	"owner": "John",
+	"cars" : [
+		{"color": "green", "type": "Mazda"},
+		{"color": "blue", "type": "Toyota"}
+		]
+}
