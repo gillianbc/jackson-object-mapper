@@ -76,15 +76,26 @@ public class JacksonApplication implements CommandLineRunner{
 		JsonNode jsonNode = objectMapper.readTree(json);
 		System.out.println("Getting node with property `color`: " + jsonNode.get("color").asText());
 		
-		System.out.println("\nNow let's read in a json file and get individual nodes: ");
+		System.out.println("\nNow let's read in a json file and get individual nodes using path(): ");
 		json = utils.readJsonFile("json2.json");
 		
-		JsonNode rootNode = objectMapper.readTree(json);
+		jsonNode = objectMapper.readTree(json);
 		
 		utils.printPrettyJSON(json);
-		System.out.println("Rootnode is " + rootNode);
-		JsonNode locatedNode = rootNode.path("identification").path("name");
+		System.out.println("Rootnode is " + jsonNode);
+		
+		JsonNode locatedNode = jsonNode.path("identification").path("name");
 		System.out.println("identification/name node is " + locatedNode);
+		
+		locatedNode = jsonNode.path("identification").path("address");
+		System.out.println("identification/address node is " + locatedNode);
+		
+		// See how we use method chaining to drill down the hierarchy
+		locatedNode = jsonNode
+				.path("identification")
+				.path("address")
+				.path("number");
+		System.out.println("identification/address/number node is " + locatedNode);
 		
 	}
 	

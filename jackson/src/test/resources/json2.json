@@ -1,6 +1,10 @@
 {
   "identification" :  {
         "name" : "James",
-        "ssn": "ABC123552"
+        "ssn": "ABC123552",
+        "address" : {
+        	"street" : "Baker St",
+        	"number" : "221b"
+        }
     }
 }
